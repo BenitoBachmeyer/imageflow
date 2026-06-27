@@ -1,0 +1,57 @@
+
+services:
+
+  db:
+    image: postgres:latest
+    restart: always
+    shm_size: 1gb
+    environment:
+      POSTGRES_PASSWORD: placeholderpw
+
+  minio:
+    image: minio/minio
+    environment:
+      - MINIO_ROOT_USER=root
+      - MINIO_ROOT_PASSWORD=root1234
+      - MINIO_DEFAULT_BUCKETS=bucket
+    networks:
+      - minio-network
+    volumes:
+      - minio-volume:/data
+    ports:
+      - "9222:9000"
+      - "9223:9001"
+    command: [ "server", "--console-address", ":9001", "/data"]
+
+  rabbitmq:
+    image: rabbitmq:latest
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=benito
+      - RABBITMQ_DEFAULT_PASS=benito
+    configs:
+      - source: rabbitmq-plugins
+        target: /etc/rabbitmq/enabled_plugins
+    volumes:
+      - rabbitmq-lib:/var/lib/rabbitmq/
+      - rabbitmq-log:/var/log/rabbitmq
+
+
+networks:
+  minio-network:
+    driver: bridge
+
+volumes:
+  minio-volume:
+    driver: local
+  rabbitmq-lib:
+    driver: local
+  rabbitmq-log:
+    driver: local
+
+configs:
+  rabbitmq-plugins:
+    content: "[rabbitmq_management]."
