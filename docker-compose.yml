@@ -24,7 +24,7 @@ services:
     command: [ "server", "--console-address", ":9001", "/data"]
 
   rabbitmq:
-    image: rabbitmq:3.4.3-management
+    image: rabbitmq:3-management
     restart: always
     ports:
       - "5672:5672"
