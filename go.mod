@@ -1,3 +1,3 @@
 module github.com/BenitoBachmeyer/imageflow
 
-go 1.24.3
+go 1.26.4
